@@ -1,11 +1,13 @@
 import Houses from "../models/Houses";
-import User from "../models/User";
 
 class HouseController {
   async store(req, res) {
-    const file = req.file;
+    try{
+      const file = req.file;
     const { house, valor, status } = req.body;
     const { user_id } = req.headers;
+
+
     if( !house || !valor || !status ){
         res.status(400).json({
             msg : "Favor preencher todos os campos"
@@ -16,7 +18,7 @@ class HouseController {
         msg: "Não autorizado",
       });
     }
-    console.log(file)
+    
     const Casa = await Houses.create({
       image: file.filename,
       user: user_id,
@@ -28,6 +30,13 @@ class HouseController {
     return res.status(200).json({
       msg: `Casa Criada : ${Casa}`,
     });
+
+    }catch(e){
+      return res.status(400).json({
+        msg : "Error"
+      })
+    }
+    
   }
 
   async index(req, res) {
@@ -43,10 +52,11 @@ class HouseController {
 
 
   async destroy(req, res) {
-    const { house } = req.body;
+    try{
+      const { house } = req.body;
     const { user_id } = req.headers;
     const casa = await Houses.findOne({ house });
-    console.log(casa)
+    
 
     try {
       if (casa.user != user_id) {
@@ -70,6 +80,13 @@ class HouseController {
       msg: "Casa retirada",
       "Casa Retirada": casa,
     });
+      
+    }catch(e){
+      return res.status(400).json({
+        msg : "Error"
+      })
+    }
+    
   }
 }
 
