@@ -1,4 +1,7 @@
 import Houses from "../models/Houses";
+import path, { dirname } from 'path'
+import fs from 'fs'
+import { promisify } from "util";
 
 class HouseController {
   async store(req, res) {
@@ -69,9 +72,11 @@ class HouseController {
           msg: "Não autorizado",
         });
       }
+      const caminho = path.resolve(__dirname, '..', '..', 'uploads', casa.image)
+      const unlink = promisify(fs.unlink)
       
-      
-
+      await Promise.all([unlink(caminho)])
+     
       await Houses.findOneAndDelete({ house });
 
       return res.status(301).json({
