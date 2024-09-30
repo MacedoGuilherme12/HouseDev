@@ -7,17 +7,13 @@ import upload from './config/upload'
 
 
 const routes = new Router()
-const uploade = multer(upload)
+const atualizar = multer(upload)
 
-
-routes.get('/houses', HouseController.index )
 
 routes.post('/session', UserController.store)
-routes.post('/house', uploade.single("image"), HouseController.store)
-
-
-
-
+routes.get('/houses', HouseController.index )
+routes.post('/house', atualizar.single("image"), HouseController.store)
+routes.put('/houses/:house_id',atualizar.single('image'), HouseController.update)
 routes.delete('/house', HouseController.destroy)
 
 
