@@ -6,7 +6,6 @@ import { promisify } from "util";
 class HouseController {
   async store(req, res) {
     try {
-      this.valida()
       const file = req.file;
       const { house, valor, status } = req.body;
       const { user_id } = req.headers;
@@ -59,10 +58,8 @@ class HouseController {
     try {
       const { house } = req.body;
       const { user_id } = req.headers;
-      const { casaAntiga } = req.query
       const casa = await Houses.findOne({ house });
       
-      console.log(casaAntiga)
       if (casa == null) {
         return res.status(400).json({
           msg: "Não encontrado",
@@ -99,7 +96,7 @@ class HouseController {
       const { house_id } = req.params
       const casa = await Houses.findById(house_id)
       
-      if(house || valor || status ){
+      if(!house || !valor || !status ){
         return res.status(400).json({
           msg : "Favor preencher os campos"
         })
@@ -109,12 +106,6 @@ class HouseController {
           msg : "Não autorizado"
         })
       }
-      console.log(await Houses.updateOne({ _id : house_id },{
-        house : house,
-        valor : valor,
-        status : status
-      }))
-      return ""
       return  res.status(200).json({
         msg : "Casa Atualizada"
       })
