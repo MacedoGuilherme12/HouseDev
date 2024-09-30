@@ -1,6 +1,6 @@
 import Houses from "../models/Houses";
 import path, { dirname } from 'path'
-import fs from 'fs'
+import fs, { stat } from 'fs'
 import { promisify } from "util";
 
 class HouseController {
@@ -60,7 +60,7 @@ class HouseController {
       const { user_id } = req.headers;
       const casa = await Houses.findOne({ house });
       
-      if (casa == null) {
+      if (Object.keys(casa) == 0) {
         return res.status(400).json({
           msg: "Não encontrado",
         });
@@ -91,12 +91,12 @@ class HouseController {
 
   async update(req,res){
     try{
-      const { image, house, valor, status } = req.body
+      const { house, valor, status } = req.body
       const { user_id } = req.headers
       const { house_id } = req.params
       const casa = await Houses.findById(house_id)
       
-      if(!house || !valor || !status ){
+      if(!house || !valor ){
         return res.status(400).json({
           msg : "Favor preencher os campos"
         })
@@ -106,6 +106,11 @@ class HouseController {
           msg : "Não autorizado"
         })
       }
+      console.log(await Houses.updateOne({ _id : house_id },{
+        house,
+        valor,
+        status
+      }))
       return  res.status(200).json({
         msg : "Casa Atualizada"
       })
